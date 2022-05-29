@@ -10,8 +10,8 @@ import memory
 # X <- X >> 1 [OK]
 # momery[address] <- X [OK]
 # X <- X * memory[address] [OK]
-# X <- X // memory[address]
-# X <- X % memory[address]
+# X <- X // memory[address] [OK]
+# X <- X % memory[address] 
 # GOTO address
 # if X == 0 GOTO address
 # if X < 0 GOTO address
@@ -121,9 +121,27 @@ firmware[283] = 0b00000000010000110101001000001001
 firmware[27] = 0b00001110000000110110000010000100
 ## X <- X + H; GOTO 26
 firmware[28] = 0b00001101000000111100000100000011
-
 # H fica o maior
 # Y fica o menor
+
+# X <- X // memory[address]
+## PC <- PC + 1; MBR <- read_byte(PC); GOTO 30
+firmware[29] = 0b00001111000000110101001000001001
+## MAR <- MBR; read_word; GOTO 31
+firmware[30] = 0b00001111100000010100100000010010
+## H <- MDR; GOTO 32
+firmware[31] = 0b00010000000000010100000001000000
+## Y <- X; GOTO 33
+firmware[32] = 0b00010000100000010100000010000011
+## X <- 0; GOTO 34
+firmware[33] = 0b00010001000000010000000100000000
+## Y <- Y - H; if Y - H < 0 GOTO 35 + 256; else GOTO 35
+firmware[34] = 0b00010001101000111111000010000100
+### [35] Y é maior ou igual a 0
+## X <- X + 1; GOTO 34
+firmware[35] = 0b00010001000000110101000100000011
+### [291] Y é menor que 0
+firmware[291] = 0b00000000010000110101001000001001
 
 #halt
 firmware[255] = 0b00000000000000000000000000000000

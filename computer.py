@@ -16,13 +16,16 @@ memory.write_byte(11, 16)
 memory.write_byte(12, 203)
 memory.write_byte(13, 19)
 memory.write_byte(14, 204)
-memory.write_byte(15, 255)
+memory.write_byte(15, 29)
+memory.write_byte(16, 205)
+memory.write_byte(17, 255)
 
 
 memory.write_word(200, 50)
 memory.write_word(201, 20)
 memory.write_word(202, 30)
 memory.write_word(204, 8)
+memory.write_word(205, 313)
 
 clock.start([cpu])
 
