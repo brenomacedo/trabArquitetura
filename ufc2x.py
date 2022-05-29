@@ -11,10 +11,10 @@ import memory
 # momery[address] <- X [OK]
 # X <- X * memory[address] [OK]
 # X <- X // memory[address] [OK]
-# X <- X % memory[address] 
-# GOTO address
-# if X == 0 GOTO address
-# if X < 0 GOTO address
+# X <- X % memory[address] [OK]
+# GOTO address [OK]
+# if X == 0 GOTO address [OK]
+# if X < 0 GOTO address [OK]
 
 # ===== fazer o assembly
 
@@ -63,7 +63,7 @@ firmware[7] = 0b00000100000000010100000001000000
 ## X <- X + H; GOTO 0
 firmware[8] = 0b00000000000000111100000100000011
 
-# X <- X - momery[address]
+# X <- X - memory[address]
 ## PC <- PC + 1; MBR <- read_byte(PC); GOTO 10
 firmware[9] = 0b00000101000000110101001000001001
 ## MAR <- MBR; read_word; GOTO 11
@@ -155,6 +155,35 @@ firmware[39] = 0b00010011101000111111000100000011
 ### [295] X é menor que 0
 ## X <- X + H; GOTO 0
 firmware[295] = 0b00000000000000111100000100000011
+
+# GOTO address
+## PC <- PC + 1; MBR <- read_byte(PC); GOTO 41
+firmware[40] = 0b00010100100000110101001000001001
+## PC <- MBR; MBR <- read_byte(PC); GOTO MBR
+firmware[41] = 0b00000000010000010100001000001010
+
+# if X == 0 GOTO address
+## PC <- PC + 1; MBR <- read_byte(PC); GOTO 43
+firmware[42] = 0b00010101100000110101001000001001
+## if X == 0; GOTO 44 + 256; else GOTO 44
+firmware[43] = 0b00010110000100010100000000000011
+### [300] X é igual a 0
+## PC <- MBR; MBR <- read_byte(PC); GOTO MBR
+firmware[300] = 0b00000000010000010100001000001010
+## [44] X é diferente de 0
+firmware[44] = 0b00000000010000110101001000001001
+
+# if X < 0 GOTO address
+## PC <- PC + 1; MBR <- read_byte(PC); GOTO 46
+firmware[45] = 0b00010111000000110101001000001001
+## if X < 0; GOTO 47 + 256; else GOTO 47
+firmware[46] = 0b00010111101000010100000000000011
+### [303] X é igual a 0
+## PC <- MBR; MBR <- read_byte(PC); GOTO MBR
+firmware[303] = 0b00000000010000010100001000001010
+## [47] X é diferente de 0
+firmware[47] = 0b00000000010000110101001000001001
+
 #halt
 firmware[255] = 0b00000000000000000000000000000000
 
