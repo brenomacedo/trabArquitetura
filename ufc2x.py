@@ -9,7 +9,7 @@ import memory
 # X <- x << 1 [OK]
 # X <- X >> 1 [OK]
 # momery[address] <- X [OK]
-# X <- X * memory[address]
+# X <- X * memory[address] [OK]
 # X <- X // memory[address]
 # X <- X % memory[address]
 # GOTO address
@@ -94,6 +94,36 @@ firmware[17] = 0b00001001000000010100100000000010
 firmware[18] = 0b00000000000000010100010000100011
 
 # X <- X * memory[address]
+## PC <- PC + 1; MBR <- read_byte(PC); GOTO 20
+firmware[19] = 0b00001010000000110101001000001001
+## MAR <- MBR; read_word; GOTO 21
+firmware[20] = 0b00001010100000010100100000010010
+## H <- MDR; GOTO 22
+firmware[21] = 0b00001011000000010100000001000000
+## if X - H < 0; GOTO 23 + 256; else GOTO 23
+firmware[22] = 0b00001011101000111111000000000011
+### [23] H é menor ou igual
+## Y <- H; GOTO 24
+firmware[23] = 0b00001100000000011000000010000000
+### [279] H é maior
+## Y <- X; GOTO 25
+firmware[279] = 0b00001100100000010100000010000011
+## H <- X; GOTO 25
+firmware[24] = 0b00001100100000010100000001000011
+### [25] inicia a multiplicação
+## X <- 0; GOTO 26
+firmware[25] = 0b00001101000000010000000100000000
+## if Y == 0 GOTO 256 + 27; else GOTO 27
+firmware[26] = 0b00001101100100010100000000000100
+### [283] y é zero, portanto, vá para a próxima instrução
+firmware[283] = 0b00000000010000110101001000001001
+## Y <- Y - 1; GOTO 28
+firmware[27] = 0b00001110000000110110000010000100
+## X <- X + H; GOTO 26
+firmware[28] = 0b00001101000000111100000100000011
+
+# H fica o maior
+# Y fica o menor
 
 #halt
 firmware[255] = 0b00000000000000000000000000000000
@@ -209,7 +239,7 @@ def next_instruction(next, jam):
       
    if jam & 0b100:
       next = next | MBR
-      
+
    MPC = next
    
 def memory_io(mem_bits):
