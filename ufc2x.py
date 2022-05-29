@@ -29,7 +29,7 @@ X   = 0
 Y   = 0
 H   = 0
 
-N   = 0
+NGT = 0
 Z   = 1
 
 BUS_A = 0
@@ -133,7 +133,7 @@ def write_regs(reg_bits):
       H = BUS_C
       
 def alu(control_bits):
-   global N, Z, BUS_A, BUS_B, BUS_C
+   global NGT, Z, BUS_A, BUS_B, BUS_C
 
    a = BUS_A
    b = BUS_B
@@ -176,11 +176,14 @@ def alu(control_bits):
       o = -1   
    
    if o == 0:
-      N = 0
       Z = 1
    else:
-      N = 1
       Z = 0
+
+   if o < 0:
+      NGT = 1
+   else:
+      NGT = 0
       
    if shift_bits == 0b01:
       o = o << 1
@@ -192,7 +195,7 @@ def alu(control_bits):
    BUS_C = o
    
 def next_instruction(next, jam):
-   global MPC, MBR, Z, N
+   global MPC, MBR, Z, NGT
    
    if jam == 0:
       MPC = next
@@ -202,7 +205,7 @@ def next_instruction(next, jam):
       next = next | (Z << 8)   
    
    if jam & 0b010:
-      next = next | (N << 8)
+      next = next | (NGT << 8)
       
    if jam & 0b100:
       next = next | MBR
