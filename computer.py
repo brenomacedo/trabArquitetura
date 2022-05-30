@@ -69,6 +69,13 @@ import ufc2x as cpu
 
 # memory.write_word(200, 256)
 
+memory.write_byte(1, 1)
+memory.write_byte(2, 200)
+memory.write_byte(3, 57)
+memory.write_byte(4, 255)
+
+memory.write_word(200, 100)
+
 clock.start([cpu])
 
 print(cpu.X)
