@@ -15,6 +15,9 @@ import memory
 # GOTO address [OK]
 # if X == 0 GOTO address [OK]
 # if X < 0 GOTO address [OK]
+# X <- X! [OK]
+# X <- floor(lg(X)) [OK]
+# X <- ceil(lg(X))
 
 # ===== fazer o assembly
 
@@ -213,6 +216,19 @@ firmware[55] = 0b00011100000000110110000010000100
 ## X <- X + H; GOTO 54
 firmware[56] = 0b00011011000000111100000100000011
 
+# X <- floor(lg(X))
+## Y <- 0; GOTO 58
+firmware[57] = 0b00011101000000010000000010000000
+## if X - 1 == 0 GOTO 59 + 256; else GOTO 59
+firmware[58] = 0b00011101100100110110000000000011
+### [315] X é igual a 1
+## X <- Y; GOTO 0
+firmware[315] = 0b00000000000000010100000100000100
+### [59] X é diferente de 1
+## X <- X >> 1 GOTO 60
+firmware[59] = 0b00011110000010010100000100000011
+## Y <- Y + 1; GOTO 58
+firmware[60] = 0b00011101000000110101000010000100
 
 #halt
 firmware[255] = 0b00000000000000000000000000000000
