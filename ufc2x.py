@@ -17,7 +17,7 @@ import memory
 # if X < 0 GOTO address [OK]
 # X <- X! [OK]
 # X <- floor(lg(X)) [OK]
-# X <- ceil(lg(X))
+# X <- ceil(lg(X)) [OK]
 
 # ===== fazer o assembly
 
