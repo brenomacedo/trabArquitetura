@@ -14,8 +14,12 @@ main pull x, f
     jz x, found
     dec x
     jz x, found
+    
+    push x, c
 
 search dec x
+    push x, c
+
     pull x, r
     push x, s
 
@@ -24,6 +28,8 @@ search dec x
 
     pull x, s
     push x, f
+
+    pull x, c
 
     jz x, found
     goto search
