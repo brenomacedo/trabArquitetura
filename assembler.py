@@ -174,7 +174,7 @@ def encode_noarg_cmd(line, cmd):
         byteList.append(cmdBins[cmd])
         byteCounter += 1
     elif len(splittedLine) == 3 and splittedLine[1] == cmd and splittedLine[2] == 'x':
-        byteList.append(0x04)
+        byteList.append(cmdBins[cmd])
         addrName = splittedLine[0]
         addrNames[addrName] = byteCounter
         byteCounter += 1
@@ -187,6 +187,11 @@ def encode_halt(line):
     splittedLine = line.split(' ')
     if len(splittedLine) == 1 and splittedLine[0] == 'halt':
         byteList.append(cmdBins['halt'])
+        byteCounter += 1
+    elif len(splittedLine) == 2 and splittedLine[1] == 'halt':
+        byteList.append(cmdBins['halt'])
+        addrName = splittedLine[0]
+        addrNames[addrName] = byteCounter
         byteCounter += 1
     else:
         raise Exception('sintaxe de "halt" invalida')
