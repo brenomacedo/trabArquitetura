@@ -6,6 +6,7 @@ try:
 except:
     print('Sintaxe invalida!')
     print('Modo de usar: python3 assembler.py prog.asm output.bin')
+    exit(1)
 
 try:
     argv[3]
@@ -45,6 +46,7 @@ try:
     asmFile = open(argv[1])
 except:
     print('Arquivo assembly \'' + argv[1] + '\' nao encontrado!')
+    exit(1)
 
 asmLines = asmFile.readlines()
 
