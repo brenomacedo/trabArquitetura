@@ -6,6 +6,7 @@ try:
 except:
     print('Sintaxe invalida!')
     print('Modo de usar: python3 assembler.py prog.asm output.bin')
+    exit(1)
 
 try:
     argv[3]
@@ -38,6 +39,8 @@ cmdBins = {
     'goto': 0x28,
     'jz': 0x2A,
     'jngt': 0x2D,
+    'zero': 0x46,
+    'pow2': 0x47,
     'halt': 0xFF
 }
 
@@ -45,6 +48,7 @@ try:
     asmFile = open(argv[1])
 except:
     print('Arquivo assembly \'' + argv[1] + '\' nao encontrado!')
+    exit(1)
 
 asmLines = asmFile.readlines()
 
@@ -174,12 +178,12 @@ def encode_noarg_cmd(line, cmd):
         byteList.append(cmdBins[cmd])
         byteCounter += 1
     elif len(splittedLine) == 3 and splittedLine[1] == cmd and splittedLine[2] == 'x':
-        byteList.append(0x04)
+        byteList.append(cmdBins[cmd])
         addrName = splittedLine[0]
         addrNames[addrName] = byteCounter
         byteCounter += 1
     else:
-        raise Exception('sintaxe de "inc x" invalida')
+        raise Exception('sintaxe de "' + cmd + '" x invalida')
 
 def encode_halt(line):
     global byteCounter
@@ -187,6 +191,11 @@ def encode_halt(line):
     splittedLine = line.split(' ')
     if len(splittedLine) == 1 and splittedLine[0] == 'halt':
         byteList.append(cmdBins['halt'])
+        byteCounter += 1
+    elif len(splittedLine) == 2 and splittedLine[1] == 'halt':
+        byteList.append(cmdBins['halt'])
+        addrName = splittedLine[0]
+        addrNames[addrName] = byteCounter
         byteCounter += 1
     else:
         raise Exception('sintaxe de "halt" invalida')
@@ -225,6 +234,10 @@ try:
             encode_noarg_cmd(line, 'inc')
         elif 'dec x' in line:
             encode_noarg_cmd(line, 'dec')
+        elif 'zero x' in line:
+            encode_noarg_cmd(line, 'zero')
+        elif 'pow2 x' in line:
+            encode_noarg_cmd(line, 'pow2')
         elif 'sl x' in line:
             encode_noarg_cmd(line, 'sl')
         elif 'sr x' in line:
